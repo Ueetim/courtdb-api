@@ -1,11 +1,9 @@
 package models
 
-import (
-
-)
+import "gorm.io/gorm"
 
 type Court struct {
-	Id			uint	`jsn:"id"`
+	gorm.Model
 	Name		string	`json:"name"`
 	Email		string	`json:"email" gorm:"unique"`
 	Password	[]byte	`json:"-"` //indicates we dont want to return password

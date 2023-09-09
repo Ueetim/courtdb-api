@@ -6,9 +6,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/ueetim/court-system/routes"
+	"github.com/ueetim/court-system/database"
 )
 
 func main() {
+	database.Connect()
+
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
