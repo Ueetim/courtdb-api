@@ -17,5 +17,5 @@ func Connect() {
 
     DB = conn
 
-    conn.AutoMigrate(&models.Court{})
+    conn.AutoMigrate(&models.Court{}, &models.Case{})
 }
