@@ -45,10 +45,32 @@ func GetRecordsByUser(c *fiber.Ctx) error {
 	database.DB.Where("court_id = ?", data["id"]).Find(&records)
 
 	if len(records) == 0 {
+		c.Status(fiber.StatusNotFound)
 		return c.JSON(fiber.Map{
 			"message": "nothing found",
 		})
 	}
 
 	return c.JSON(records)
+}
+
+func GetOneRecordByUser(c *fiber.Ctx) error {
+	var data map[string]string
+
+	if err := c.BodyParser(&data); err != nil {
+		return err
+	}
+
+	var record models.Case
+
+	database.DB.Where("id = ? AND court_id = ?", data["id"], data["court_id"]).First(&record)
+
+	if record.ID == 0 {
+		c.Status(fiber.StatusNotFound)
+		return c.JSON(fiber.Map{
+			"message": "nothing found",
+		})
+	}
+
+	return c.JSON(record)
 }
