@@ -10,6 +10,7 @@ import (
 
 	"github.com/ueetim/court-system/database"
 	"github.com/ueetim/court-system/models"
+	"github.com/ueetim/court-system/middleware"
 )
 
 const SecretKey = "secret"
@@ -25,9 +26,10 @@ func Register(c *fiber.Ctx) error {
 
 	user := models.Court{
 		Name:		data["name"],
+		Location:	data["location"],
+		Type:		data["type"],
 		Email:		data["email"],
 		Password: 	password,
-		City:		data["city"],
 	}
 
 	// check if email already exists
@@ -36,15 +38,18 @@ func Register(c *fiber.Ctx) error {
 
 	// if record exists
 	if userExists.ID != 0 {
-		// c.Status(fiber.StatusNotFound)
+		c.Status(fiber.StatusBadRequest)
 		return c.JSON(fiber.Map{
-			"message": "a user with the provided email already exists",
+			"message": "A user with the provided email already exists",
 		})
 	}
 
 	database.DB.Create(&user)
 	
-	return c.JSON(user)
+	c.Status(fiber.StatusCreated)
+	return c.JSON(fiber.Map{
+		"message": "Account created successfully. Please log in",
+	})
 
 }
 
@@ -98,30 +103,19 @@ func Login(c *fiber.Ctx) error {
 
 	c.Cookie(&cookie)
 
+	c.Status(fiber.StatusAccepted)
 	return c.JSON(fiber.Map{
-		"message": "success",
+		"token": 	&cookie,
+		"expires":	&cookie.Expires,
 	})
 }
 
 func GetLoggedInUser(c *fiber.Ctx) error {
-	cookie := c.Cookies("jwt")
-
-	token, err := jwt.ParseWithClaims(cookie, &jwt.StandardClaims{}, func(t *jwt.Token) (interface{}, error) {
-		return []byte(SecretKey), nil
-	})
-
-	if err != nil {
-		c.Status(fiber.StatusUnauthorized)
-		return c.JSON(fiber.Map{
-			"message": "unauthenticated",
-		})
-	}
-
-	claims := token.Claims.(*jwt.StandardClaims)
+	_, claims := middleware.AuthenticateUser(c)	
 
 	var court models.Court
 
-	database.DB.Where("id = ?", claims.Issuer).First(&court)
+	database.DB.Where("id = ?", claims).First(&court)
 
 	return c.JSON(court)
 }
