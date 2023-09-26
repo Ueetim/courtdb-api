@@ -41,6 +41,7 @@ func CreateRecord(c *fiber.Ctx) error {
 		Created:		data["created"],
 		Completed:		data["completed"],
 		Status:			status,
+		Visibility: 	"public",
 	}
 
 	database.DB.Create(&record)
@@ -84,4 +85,21 @@ func GetOneRecordByUser(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(record)
+}
+
+func GetRecordsByOtherUsers(c *fiber.Ctx) error {
+	_, claims := middleware.AuthenticateUser(c)
+
+	var records []models.Case
+
+	database.DB.Where("court_id <> ? AND visibility = ?", claims, "public").Find(&records)
+
+	if len(records) == 0 {
+		c.Status(fiber.StatusNotFound)
+		return c.JSON(fiber.Map{
+			"message": "nothing found",
+		})
+	}
+
+	return c.JSON(records)
 }

@@ -12,4 +12,5 @@ type Case struct {
 	Completed		string	`json:"city"`
 	Documentation	string	`json:"doc"`
 	Status			string	`json:"status"`
+	Visibility		string	`json:"visibility"`
 }

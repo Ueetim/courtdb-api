@@ -17,4 +17,5 @@ func Setup(app *fiber.App) {
 	app.Post("/api/record", controllers.CreateRecord)
 	app.Get("/api/record", controllers.GetOneRecordByUser)
 	app.Get("/api/records", controllers.GetRecordsByUser)
+	app.Get("/api/records/other", controllers.GetRecordsByOtherUsers)
 }
