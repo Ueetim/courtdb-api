@@ -103,3 +103,84 @@ func GetRecordsByOtherUsers(c *fiber.Ctx) error {
 
 	return c.JSON(records)
 }
+
+func UpdateVisibility(c *fiber.Ctx) error {
+	var data map[string]string
+	
+	if err := c.BodyParser(&data); err != nil {
+		return err
+	}
+
+	_, claims := middleware.AuthenticateUser(c)
+
+	var record models.Case
+
+	// database.DB.Model(record{}).Where("id = ? AND court_id = ?", data["id"], claims).Update(record{"visibility", data["visibility"]})
+
+	database.DB.Where("id = ? AND court_id = ?", data["id"], claims).First(&record).Update("visibility", data["visibility"])
+
+	if record.ID == 0 {
+		c.Status(fiber.StatusBadRequest)
+		return c.JSON(fiber.Map{
+			"message": "Request invalid",
+		})
+	}
+
+	return c.JSON(record)
+}
+
+func EditDocumentation(c *fiber.Ctx) error {
+	var data map[string]string
+
+	if err := c.BodyParser(&data); err != nil {
+		return err
+	}
+
+	_, claims := middleware.AuthenticateUser(c)
+
+	var record models.Case
+
+	// database.DB.Model(record{}).Where("id = ? AND court_id = ?", data["id"], claims).Update(record{"visibility", data["visibility"]})
+
+	database.DB.Where("id = ? AND court_id = ?", data["id"], claims).First(&record).Update("documentation", data["documentation"])
+
+	if record.ID == 0 {
+		c.Status(fiber.StatusBadRequest)
+		return c.JSON(fiber.Map{
+			"message": "Request invalid",
+		})
+	}
+
+	return c.JSON(record)
+}
+
+func UpdateRecord(c *fiber.Ctx) error {
+	var data map[string]string
+
+	if err := c.BodyParser(&data); err != nil {
+		return err
+	}
+
+	_, claims := middleware.AuthenticateUser(c)
+
+	var status string
+	
+	if data["completed"] == "" {
+		status = "Open"
+	} else {
+		status = "Closed"
+	}
+
+	var record models.Case
+
+	database.DB.Where("id = ? AND court_id = ?", data["ID"], claims).First(&record).Updates(map[string]interface{}{"record_id": data["record_id"], "title": data["title"], "description": data["description"], "created": data["created"], "completed": data["completed"], "status": status})
+
+	if record.ID == 0 {
+		c.Status(fiber.StatusBadRequest)
+		return c.JSON(fiber.Map{
+			"message": "Could not update record",
+		})
+	}
+
+	return c.JSON(record)
+}

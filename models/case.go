@@ -7,10 +7,10 @@ type Case struct {
 	RecordID		string	`json:"record_id"`
 	CourtID			int		`json:"court_id"`
 	Title			string	`json:"title"`
-	Description		string	`json:"desc"`
+	Description		string	`json:"description"`
 	Created			string	`json:"created"`
-	Completed		string	`json:"city"`
-	Documentation	string	`json:"doc"`
+	Completed		string	`json:"completed"`
+	Documentation	string	`json:"documentation"`
 	Status			string	`json:"status"`
 	Visibility		string	`json:"visibility"`
 }
