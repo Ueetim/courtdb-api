@@ -19,6 +19,7 @@ func Setup(app *fiber.App) {
 	app.Get("/api/record", controllers.GetOneRecordByUser)
 	app.Get("/api/records", controllers.GetRecordsByUser)
 	app.Get("/api/records/other", controllers.GetRecordsByOtherUsers)
+	app.Delete("/api/record/delete", controllers.DeleteRecord)
 	app.Post("/api/record/visibility", controllers.UpdateVisibility)
 	app.Post("/api/record/documentation", controllers.EditDocumentation)
 }

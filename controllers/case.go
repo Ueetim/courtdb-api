@@ -6,8 +6,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 
 	"github.com/ueetim/court-system/database"
-	"github.com/ueetim/court-system/models"
 	"github.com/ueetim/court-system/middleware"
+	"github.com/ueetim/court-system/models"
 )
 
 func CreateRecord(c *fiber.Ctx) error {
@@ -54,7 +54,7 @@ func GetRecordsByUser(c *fiber.Ctx) error {
 
 	var records []models.Case
 
-	database.DB.Where("court_id = ?", claims).Find(&records)
+	database.DB.Where("court_id = ? AND deleted_at IS NULL", claims).Find(&records)
 
 	if len(records) == 0 {
 		c.Status(fiber.StatusNotFound)
@@ -92,7 +92,7 @@ func GetRecordsByOtherUsers(c *fiber.Ctx) error {
 
 	var records []models.Case
 
-	database.DB.Where("court_id <> ? AND visibility = ?", claims, "public").Find(&records)
+	database.DB.Where("court_id <> ? AND visibility = ? AND deleted_at IS NULL", claims, "public").Find(&records)
 
 	if len(records) == 0 {
 		c.Status(fiber.StatusNotFound)
@@ -181,6 +181,18 @@ func UpdateRecord(c *fiber.Ctx) error {
 			"message": "Could not update record",
 		})
 	}
+
+	return c.JSON(record)
+}
+
+func DeleteRecord(c *fiber.Ctx) error {
+	caseId := c.Query("id")
+
+	_, claims := middleware.AuthenticateUser(c)
+
+	var record models.Case
+
+	database.DB.Where("id = ? AND court_id = ?", caseId, claims).Delete(&record)
 
 	return c.JSON(record)
 }
