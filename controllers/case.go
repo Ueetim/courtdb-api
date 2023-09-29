@@ -44,6 +44,18 @@ func CreateRecord(c *fiber.Ctx) error {
 		Visibility: 	"public",
 	}
 
+	// check if record with provided ID already exists
+	var recordExists models.Case
+	database.DB.Where("record_id = ?", data["record_id"]).First(&recordExists)
+
+	// if record exists
+	if recordExists.ID != 0 {
+		c.Status(fiber.StatusBadRequest)
+		return c.JSON(fiber.Map{
+			"message": "A record with the provided Case ID already exists",
+		})
+	}
+
 	database.DB.Create(&record)
 	
 	return c.JSON(record)
