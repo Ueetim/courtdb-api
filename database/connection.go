@@ -10,7 +10,7 @@ import (
 var DB *gorm.DB
 
 func Connect() {
-	conn, err := gorm.Open(mysql.Open("uduak:quixote4@tcp(faint-banana-cnzs.cf3klctyi2vz.us-west-2.rds.amazonaws.com:3306)/primarydb"), &gorm.Config{})
+	conn, err := gorm.Open(mysql.Open("uduak:quixote4@tcp(faint-banana-cnzs.cf3klctyi2vz.us-west-2.rds.amazonaws.com:3306)/primarydb?charset=utf8&parseTime=True&loc=Local"), &gorm.Config{})
     if err != nil {
         panic("Could not connect to database")
     }
