@@ -16,7 +16,7 @@ func main() {
 
 	app.Use(cors.New(cors.Config{
 		AllowCredentials: true,
-		AllowOrigins: "http://localhost:4200",
+		AllowOrigins: "http://localhost:4200, https://ecourtpro.vercel.app",
 	}))
 
 	routes.Setup(app)
