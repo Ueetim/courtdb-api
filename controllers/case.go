@@ -68,12 +68,12 @@ func GetRecordsByUser(c *fiber.Ctx) error {
 
 	database.DB.Where("court_id = ? AND deleted_at IS NULL", claims).Find(&records)
 
-	if len(records) == 0 {
-		c.Status(fiber.StatusNotFound)
-		return c.JSON(fiber.Map{
-			"message": "nothing found",
-		})
-	}
+	// if len(records) == 0 {
+	// 	c.Status(fiber.StatusNotFound)
+	// 	return c.JSON(fiber.Map{
+	// 		"message": "nothing found",
+	// 	})
+	// }
 
 	return c.JSON(records)
 }
