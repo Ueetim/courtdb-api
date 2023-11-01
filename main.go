@@ -21,6 +21,9 @@ func main() {
 		}),
 	)
 
+	// serve static files
+	app.Static("/public", "./public/uploads")
+
 	routes.Setup(app)
 
 	log.Fatal(app.Listen(":4000"))

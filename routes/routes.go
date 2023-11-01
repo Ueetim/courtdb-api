@@ -22,4 +22,8 @@ func Setup(app *fiber.App) {
 	app.Delete("/api/record/delete", controllers.DeleteRecord)
 	app.Post("/api/record/visibility", controllers.UpdateVisibility)
 	app.Post("/api/record/documentation", controllers.EditDocumentation)
+
+	// file upload routes
+	app.Post("/api/upload", controllers.UploadFile)
+	app.Get("/api/files/:id", controllers.GetCaseFiles)
 }
